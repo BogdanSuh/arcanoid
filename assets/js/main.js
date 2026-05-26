@@ -55,11 +55,12 @@ window.onload = () => {
     checkStorage();
     nav();
     startLoop();
-    setInterval(() => {
+    let startCheck = setInterval(() => {
         if(panel === 'game') {
             game = new Game();
             game.start();
             panel = 'game process';
+            clearInterval(startCheck);
         }
     }, 500)
 }

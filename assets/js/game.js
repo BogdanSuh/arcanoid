@@ -185,6 +185,31 @@ class Ball extends Drawable {
 // }
 
 
+class Brick extends Drawable {
+    constructor(game, x, y, color) {
+        super(game);
+        this.w = 80;
+        this.h = 25;
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.createElement();
+        this.element.style.backgroundColor = this.color;
+    }
+    update() {
+        if (this.isCollision(this.game.ball)) {
+            this.game.ball.offsets.y = -this.offsets.y;
+            this.destroy();
+        }
+    }
+    destroy() {
+        if (this.game.remove(this)) {
+            this.removeElement();
+            this.game.points +=10;
+            this.game.checkWinCondition();
+        }
+    }
+}
 
 class Player extends Drawable {
     constructor(game) {
@@ -267,6 +292,28 @@ class Game {
         this.ended = false;
         this.pause = false;
         this.keyEvents();
+    }
+
+    generateBrickGird() {
+        const rows = 4;
+        const cols = 10;
+        const brickW = 80;
+        const brickH = 25;
+        const padding = 15;
+        const offsetTop = 120;
+
+        const totalGridWidth = (cols * brickW) + ((cols - 1) * padding);
+        const offsetLeft = (window.innerWidth - totalGridWidth) / 2;
+        const colors = ['#ff0055', '#ff5500', '#ffaa00', '#00ff66'];
+
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                let brickX = offsetLeft + c * (brickW + padding);
+                let brickY = offsetTop + r * (brickH + padding);
+                let brick = new Brick(this, brickX, brickY, colors[r]);
+                this.elements.push(brick);
+            }
+        }
     }
 
     start () {
